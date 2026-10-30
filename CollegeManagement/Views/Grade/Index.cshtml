@@ -1,0 +1,119 @@
+@model IEnumerable<CollegeManagement.Models.Grade>
+@{
+    ViewData["Title"] = "Электронный журнал оценок";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-journal-check text-warning me-2"></i> Электронный журнал оценок</h2>
+        <p class="text-muted mb-0">Класс GradeBook, инкапсулированный список и валидация 2-5 (Задание 28, 30)</p>
+    </div>
+    <div>
+        <a asp-action="Add" class="btn btn-warning text-dark fw-semibold">
+            <i class="bi bi-plus-circle-fill me-1"></i> Выставить оценку
+        </a>
+    </div>
+</div>
+
+<!-- Фильтры и средний балл -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+        <form method="get" asp-action="Index" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <label class="form-label mb-1 small text-muted fw-semibold">Фильтр по студенту:</label>
+                <select name="studentId" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Все студенты</option>
+                    @foreach (var s in (IEnumerable<CollegeManagement.Models.Student>)ViewBag.Students)
+                    {
+                        <option value="@s.Id" selected="@(ViewBag.SelectedStudentId == s.Id)">@s.GetFullName() (@s.Group)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label mb-1 small text-muted fw-semibold">Фильтр по предмету:</label>
+                <select name="subjectId" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Все предметы</option>
+                    @foreach (var sub in (IEnumerable<CollegeManagement.Models.Subject>)ViewBag.Subjects)
+                    {
+                        <option value="@sub.Id" selected="@(ViewBag.SelectedSubjectId == sub.Id)">@sub.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end justify-content-between">
+                <div>
+                    <span class="small text-muted d-block">Средний балл выборки:</span>
+                    <span class="fs-4 fw-bold text-success">@ViewBag.AverageGrade.ToString("F2")</span>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Сброс</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Дата</th>
+                        <th>Студент</th>
+                        <th>Предмет</th>
+                        <th>Оценка (Задание 28: 2-5)</th>
+                        <th>Примечание</th>
+                        <th class="text-end">Удалить (Task 28)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                Записи об оценках отсутствуют.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var g in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-secondary font-monospace">#@g.Id</span></td>
+                            <td>@g.Date.ToString("dd.MM.yyyy")</td>
+                            <td class="fw-semibold">@g.StudentName</td>
+                            <td>@g.SubjectName</td>
+                            <td>
+                                @if (g.Value == 5)
+                                {
+                                    <span class="badge bg-success fs-6 px-3">5 (Отлично)</span>
+                                }
+                                else if (g.Value == 4)
+                                {
+                                    <span class="badge bg-primary fs-6 px-3">4 (Хорошо)</span>
+                                }
+                                else if (g.Value == 3)
+                                {
+                                    <span class="badge bg-warning text-dark fs-6 px-3">3 (Удовл.)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6 px-3">2 (Неуд.)</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@g.Comment</td>
+                            <td class="text-end">
+                                <form asp-action="Delete" asp-route-id="@g.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить эту оценку?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="RemoveGrade()">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

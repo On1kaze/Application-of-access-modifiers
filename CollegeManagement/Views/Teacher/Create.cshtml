@@ -1,0 +1,59 @@
+@{
+    ViewData["Title"] = "Добавление преподавателя";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-person-plus text-success me-2"></i> Добавление преподавателя (Задание 9, 10, 18)</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                    </div>
+                }
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Имя преподавателя</label>
+                            <input type="text" name="name" class="form-control" placeholder="Александр" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Фамилия преподавателя</label>
+                            <input type="text" name="surname" class="form-control" placeholder="Смирнов" required />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Возраст</label>
+                            <input type="number" name="age" class="form-control" min="20" max="85" value="40" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Стаж работы (лет)</label>
+                            <input type="number" name="experience" class="form-control" min="0" max="65" value="15" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Преподаваемый предмет</label>
+                        <input type="text" name="subject" class="form-control" placeholder="Разработка на C# и .NET" required />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-success fw-semibold">
+                            <i class="bi bi-check-lg me-1"></i> Сохранить преподавателя
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

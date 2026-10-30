@@ -1,0 +1,106 @@
+@model IEnumerable<CollegeManagement.Models.Student>
+@{
+    ViewData["Title"] = "Список студентов";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-people-fill text-primary me-2"></i> Студенты колледжа</h2>
+        <p class="text-muted mb-0">Применение модификаторов public, private, protected (Задания 1-8, 16-17)</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn btn-primary fw-semibold">
+            <i class="bi bi-person-plus-fill me-1"></i> Добавить студента
+        </a>
+    </div>
+</div>
+
+<!-- Фильтр по группе -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+        <form method="get" asp-action="Index" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label class="form-label mb-0 fw-semibold small text-muted">Фильтр по группе:</label>
+            </div>
+            <div class="col-auto">
+                <select name="searchGroup" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Все группы</option>
+                    @foreach (var g in (IEnumerable<string>)ViewBag.Groups)
+                    {
+                        <option value="@g" selected="@(ViewBag.SearchGroup == g)">@g</option>
+                    }
+                </select>
+            </div>
+            @if (!string.IsNullOrEmpty(ViewBag.SearchGroup))
+            {
+                <div class="col-auto">
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Сбросить</a>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>StudentId (Task 8: read-only)</th>
+                        <th>ФИО студента (Task 23: GetFullName)</th>
+                        <th>Возраст (Task 4: 15-70)</th>
+                        <th>Группа (Task 1)</th>
+                        <th>Полная инфо (Task 7, 19: GetStudentInfo)</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-3 d-block mb-1"></i>
+                                Студенты не найдены.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var s in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-secondary font-monospace">#@s.StudentId</span></td>
+                            <td class="fw-semibold">
+                                <a asp-action="Details" asp-route-id="@s.Id" class="text-decoration-none text-dark">
+                                    @s.GetFullName()
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">@s.Age лет</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">@s.Group</span>
+                            </td>
+                            <td class="small text-muted font-monospace">
+                                @s.GetStudentInfo()
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-info me-1" title="Детали и инкапсуляция">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="EditAge" asp-route-id="@s.Id" class="btn btn-sm btn-outline-warning me-1" title="Изменить возраст (SetAge)">
+                                    <i class="bi bi-pencil"></i> Возраст
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@s.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить студента @s.GetFullName()?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

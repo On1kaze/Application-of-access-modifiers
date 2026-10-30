@@ -1,0 +1,9 @@
+{
+    "dotnet.defaultSolution": "CollegeManagement.sln",
+    "csharp.format.enable": true,
+    "editor.formatOnSave": true,
+    "files.exclude": {
+        "**/bin": true,
+        "**/obj": true
+    }
+}

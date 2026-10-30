@@ -1,0 +1,81 @@
+@model IEnumerable<CollegeManagement.Models.Group>
+@{
+    ViewData["Title"] = "Учебные группы";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-collection-fill text-info me-2"></i> Учебные группы</h2>
+        <p class="text-muted mb-0">Инкапсуляция списка студентов (Задания 11, 12, 13)</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-info text-white fw-semibold">
+            <i class="bi bi-plus-circle me-1"></i> Создать группу
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center py-5 text-muted">
+            <i class="bi bi-collection fs-1 d-block mb-2"></i>
+            Группы не найдены.
+        </div>
+    }
+    @foreach (var g in Model)
+    {
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 card-hover">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-people text-info me-2"></i> @g.Name
+                    </h5>
+                    <span class="badge bg-secondary">@g.Course курс</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted small">Количество студентов:</span>
+                        <span class="badge bg-primary fs-6">@g.Students.Count чел.</span>
+                    </div>
+
+                    <div class="border rounded p-2 bg-light small mb-3" style="max-height: 120px; overflow-y: auto;">
+                        @if (!g.Students.Any())
+                        {
+                            <span class="text-muted fst-italic">Студентов в группе пока нет.</span>
+                        }
+                        else
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var s in g.Students.Take(4))
+                                {
+                                    <li class="mb-1 text-truncate"><i class="bi bi-person text-secondary me-1"></i> @s.GetFullName()</li>
+                                }
+                                @if (g.Students.Count > 4)
+                                {
+                                    <li class="text-muted small fst-italic">+ еще @(g.Students.Count - 4) ...</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+
+                    <div class="small text-muted">
+                        <span class="modifier-badge mod-private">private List&lt;Student&gt;</span>
+                        <span class="modifier-badge mod-public">public IReadOnlyList</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                    <a asp-action="Details" asp-route-id="@g.Id" class="btn btn-sm btn-outline-info">
+                        Управление студентами &rarr;
+                    </a>
+                    <form asp-action="Delete" asp-route-id="@g.Id" method="post" onsubmit="return confirm('Удалить группу @g.Name?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Добавление студента";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-person-plus text-primary me-2"></i> Добавление студента (Задания 1-6)</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                    </div>
+                }
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Имя студента</label>
+                            <input type="text" name="name" class="form-control" placeholder="Иван" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Фамилия студента</label>
+                            <input type="text" name="surname" class="form-control" placeholder="Петров" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Возраст (Задание 4: от 15 до 70 лет)</label>
+                        <input type="number" name="age" class="form-control" min="15" max="70" value="18" required />
+                        <div class="form-text small text-muted">
+                            <i class="bi bi-shield-check me-1"></i> Конструктор и метод <code>SetAge()</code> отклоняют возраст меньше 15 или больше 70 лет.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Учебная группа</label>
+                        <input list="groupsList" name="group" class="form-control" placeholder="Выберите или введите группу (например, ИС-21)" required />
+                        <datalist id="groupsList">
+                            @foreach (var g in (IEnumerable<CollegeManagement.Models.Group>)ViewBag.AvailableGroups)
+                            {
+                                <option value="@g.Name">@g.Name (Курс @g.Course)</option>
+                            }
+                        </datalist>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Отмена
+                        </a>
+                        <button type="submit" class="btn btn-primary fw-semibold">
+                            <i class="bi bi-check-lg me-1"></i> Создать студента
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

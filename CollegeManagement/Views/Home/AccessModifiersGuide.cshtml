@@ -1,0 +1,254 @@
+@{
+    ViewData["Title"] = "Справка по модификаторам доступа и 30 заданиям";
+}
+
+<div class="mb-4 pb-2 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-shield-shaded text-primary me-2"></i> Применение модификаторов доступа C#</h2>
+        <p class="text-muted mb-0">Полный справочник и карта реализации всех 30 заданий лабораторной работы</p>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> На главную
+        </a>
+    </div>
+</div>
+
+<!-- Матрица модификаторов C# -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-table text-info me-2"></i> Матрица уровней доступа в C# (.NET 8)</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mb-0 text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-start">Модификатор доступа</th>
+                        <th>Внутри того же класса</th>
+                        <th>Класс-наследник (та же сборка)</th>
+                        <th>Класс-наследник (другая сборка)</th>
+                        <th>Другой класс (та же сборка)</th>
+                        <th>Другой класс (другая сборка)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-start fw-bold"><span class="modifier-badge mod-public">public</span></td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold"><span class="modifier-badge mod-prot-internal">protected internal</span></td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold"><span class="modifier-badge mod-internal">internal</span></td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold"><span class="modifier-badge mod-protected">protected</span></td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold"><span class="modifier-badge mod-priv-protected">private protected</span></td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                    </tr>
+                    <tr>
+                        <td class="text-start fw-bold"><span class="modifier-badge mod-private">private</span></td>
+                        <td class="text-success"><i class="bi bi-check-circle-fill"></i> Да</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                        <td class="text-danger"><i class="bi bi-x-circle-fill"></i> Нет</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 5 разделов заданий -->
+<div class="row g-4">
+    <!-- Раздел 1 -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100 border-start border-primary border-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold text-primary">1. Создание структуры и применение public/private</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item px-0">
+                        <strong>1. Создание класса Student:</strong> <code>public class Student</code> с полями Name, Surname, Age, Group.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>2. Защита персональных данных:</strong> поля Name, Surname, Age закрыты через <code>private</code> (позже <code>protected</code> в Person). Публичные методы <code>GetName()</code>, <code>GetSurname()</code>, <code>GetAge()</code>.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>3. Создание свойств:</strong> свойства с валидацией для безопасного изменения.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>4. Проверка возраста:</strong> метод <code>SetAge()</code> с допустимым диапазоном 15-70 лет.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>5. Добавление конструктора:</strong> публичный конструктор со всеми обязательными аргументами.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>6. Скрытие внутренних методов:</strong> приватный метод <code>ValidateStudentData()</code>, вызываемый из конструктора.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>7. Отображение информации:</strong> метод <code>GetStudentInfo()</code> с полной строкой информации.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>8. Запрет изменения данных:</strong> <code>StudentId</code> доступен только для чтения (<code>private set</code>).
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Раздел 2 -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100 border-start border-success border-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold text-success">2. Управление преподавателями и группами</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item px-0">
+                        <strong>9. Создание класса Teacher:</strong> имя, фамилия, предмет, стаж с <code>private</code> полями и <code>public</code> свойствами.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>10. Ограничение изменения стажа:</strong> свойство <code>Experience</code> изменяется ТОЛЬКО через метод <code>UpdateExperience()</code>.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>11. Создание класса Group:</strong> название, курс и закрытый список студентов (<code>private List&lt;Student&gt; _students</code>).
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>12. Добавление студентов в группу:</strong> публичный метод <code>AddStudent()</code> с проверкой на отсутствие дублирования.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>13. Удаление студентов:</strong> метод <code>RemoveStudent()</code> без возможности прямого вмешательства в закрытую коллекцию извне.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>14. Создание класса Subject:</strong> учебный предмет с закрытыми полями названия, часов и преподавателя.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>15. Связь преподавателя с предметом:</strong> метод <code>AssignTeacher()</code> с валидацией на <code>not null</code>.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Раздел 3 -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100 border-start border-info border-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold text-info">3. Наследование и protected</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item px-0">
+                        <strong>16. Базовый класс Person:</strong> имя, фамилия, возраст объявлены как <code>protected</code> поля, доступные наследникам.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>17. Наследование класса Student:</strong> <code>Student : Person</code>, удалены дублирующиеся поля.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>18. Наследование класса Teacher:</strong> <code>Teacher : Person</code>, отдельный метод <code>GetTeacherInfo()</code>.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>19. Использование protected-методов:</strong> метод <code>DisplayBasicInfo()</code> в Person, переиспользуемый в Student и Teacher.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>20. Ограничение доступа к данным:</strong> закрытое поле <code>_internalPersonCode</code> и приватный метод валидации доступны только внутри Person.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Раздел 4 -->
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100 border-start border-warning border-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold text-warning">4. Модификаторы internal и protected internal</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item px-0">
+                        <strong>21. Класс CollegeSettings:</strong> объявлен с модификатором <code>internal</code>, хранит название и учебный год.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>22. Ограничение доступа к настройкам:</strong> методы <code>UpdateSettings()</code> и <code>UpdateContacts()</code> имеют модификатор <code>internal</code>.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>23. Protected internal метод:</strong> метод <code>GetFullName()</code> в Person доступен сборке и наследникам.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>24. Разделение доступа к отчётам:</strong> класс <code>ReportManager</code> с методом <code>protected internal GenerateReport()</code>.
+                    </li>
+                    <li class="list-group-item px-0">
+                        <strong>25. Применение private protected:</strong> метод <code>CalculateStatistics()</code> в Person доступен наследникам ТОЛЬКО внутри сборки.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Раздел 5 -->
+    <div class="col-12">
+        <div class="card shadow-sm border-start border-danger border-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold text-danger">5. Реализация функциональности сайта</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 small">
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-0">
+                                <strong>26. Система авторизации:</strong> класс <code>UserAccount</code> с приватными полями логина и пароля, методами <code>Login()</code> и <code>Logout()</code>. Пароль не отображается при выводе.
+                            </li>
+                            <li class="list-group-item px-0">
+                                <strong>27. Разделение ролей пользователей:</strong> базовый <code>User</code> (protected поля username, role; private passwordHash, salt), наследники <code>Admin</code>, <code>TeacherUser</code>, <code>StudentUser</code>.
+                            </li>
+                            <li class="list-group-item px-0">
+                                <strong>28. Журнал оценок:</strong> класс <code>GradeBook</code> с закрытым списком <code>_grades</code>, методами <code>AddGrade()</code> и <code>RemoveGrade()</code> с проверкой диапазона от 2 до 5.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-0">
+                                <strong>29. Система посещаемости:</strong> класс <code>AttendanceManager</code> с закрытыми записями <code>_records</code>, методами добавления, изменения и статистикой <code>GetAttendanceStatistics()</code>.
+                            </li>
+                            <li class="list-group-item px-0">
+                                <strong>30. Финальная веб-сборка:</strong> полноценное веб-приложение ASP.NET Core MVC с SQLite БД, авторизацией, главной страницей, каталогами студентов, преподавателей, групп, журналом оценок, посещаемостью и админ-панелью.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,118 @@
+@model CollegeManagement.Models.Student
+@{
+    ViewData["Title"] = "Профиль студента: " + Model.GetFullName();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-person-badge-fill text-primary me-2"></i> @Model.GetFullName()</h2>
+        <p class="text-muted mb-0">Карточка студента и демонстрация уровней доступа (Задания 1-8, 16-20, 23, 25)</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="EditAge" asp-route-id="@Model.Id" class="btn btn-warning btn-sm fw-semibold">
+            <i class="bi bi-pencil me-1"></i> Изменить возраст (SetAge)
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Назад к списку
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Инкапсуляция и модификаторы доступа студента -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-shield-lock-fill text-info me-2"></i> Инкапсуляция и методы Person/Student</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <td class="fw-semibold text-muted" style="width: 40%;">StudentId (Задание 8):</td>
+                            <td><span class="badge bg-secondary font-monospace">@Model.StudentId</span> <small class="text-muted">(read-only init/private set)</small></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Имя (_name: protected):</td>
+                            <td class="fw-bold">@Model.GetName()</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Фамилия (_surname: protected):</td>
+                            <td class="fw-bold">@Model.GetSurname()</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Возраст (_age: protected):</td>
+                            <td><span class="badge bg-light text-dark border">@Model.GetAge() лет</span> (Задание 4: 15-70 лет)</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Группа (_group: private):</td>
+                            <td><span class="badge bg-primary">@Model.GetGroup()</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">GetFullName() (Задание 23):</td>
+                            <td><span class="modifier-badge mod-prot-internal">protected internal</span> <code>@ViewBag.FullName</code></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">CalculateStatistics() (Задание 25):</td>
+                            <td><span class="modifier-badge mod-priv-protected">private protected</span> <code>@ViewBag.InternalStatistics</code></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold text-muted">Код аудита Person (Задание 20):</td>
+                            <td><span class="modifier-badge mod-private">private _internalPersonCode</span> <code>@ViewBag.AuditCode</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-light border mt-3 mb-0 small">
+                    <strong class="d-block mb-1"><i class="bi bi-terminal-fill me-1"></i> Результат GetStudentInfo() (Задание 7, 19):</strong>
+                    <code class="text-dark">@ViewBag.StudentInfo</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Оценки и успеваемость -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-journal-check text-warning me-2"></i> Оценки студента (Задание 28)</h5>
+                <a asp-controller="Grade" asp-action="Add" class="btn btn-sm btn-outline-warning text-dark">+ Выставить оценку</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Предмет</th>
+                                <th>Дата</th>
+                                <th>Оценка (2-5)</th>
+                                <th>Комментарий</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!((IEnumerable<CollegeManagement.Models.Grade>)ViewBag.Grades).Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted small">Оценок пока нет.</td>
+                                </tr>
+                            }
+                            @foreach (var g in (IEnumerable<CollegeManagement.Models.Grade>)ViewBag.Grades)
+                            {
+                                <tr>
+                                    <td>@g.SubjectName</td>
+                                    <td>@g.Date.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <span class="badge @(g.Value >= 4 ? "bg-success" : (g.Value == 3 ? "bg-warning text-dark" : "bg-danger"))">
+                                            @g.Value
+                                        </span>
+                                    </td>
+                                    <td class="small text-muted">@g.Comment</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

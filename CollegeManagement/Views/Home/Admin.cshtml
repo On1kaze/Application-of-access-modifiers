@@ -1,0 +1,149 @@
+@model CollegeManagement.Models.CollegeSettings
+@{
+    ViewData["Title"] = "Административная панель";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-gear-fill text-warning me-2"></i> Административная панель</h2>
+        <p class="text-muted mb-0">Управление настройками колледжа, генерация отчётов и учётные записи</p>
+    </div>
+    <div>
+        <span class="modifier-badge mod-internal me-1">internal CollegeSettings</span>
+        <span class="modifier-badge mod-prot-internal">protected internal GenerateReport()</span>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Настройки колледжа (internal) -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-sliders text-primary me-2"></i> Настройки колледжа (Задание 21, 22)</h5>
+                    <span class="badge bg-warning text-dark">internal</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info py-2 small mb-3">
+                    <i class="bi bi-info-circle me-1"></i> Класс <code>CollegeSettings</code> и методы <code>UpdateSettings()</code> имеют модификатор <code>internal</code>, что запрещает их вызов из внешних библиотек и сборок.
+                </div>
+
+                <form asp-action="UpdateSettings" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Название учебного заведения</label>
+                        <input type="text" name="collegeName" class="form-control" value="@Model.CollegeName" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Текущий учебный год</label>
+                        <input type="text" name="academicYear" class="form-control" value="@Model.AcademicYear" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Юридический адрес</label>
+                        <input type="text" name="address" class="form-control" value="@Model.Address" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Контактный телефон</label>
+                        <input type="text" name="phone" class="form-control" value="@Model.PhoneNumber" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary fw-semibold">
+                        <i class="bi bi-save me-1"></i> Сохранить настройки (internal UpdateSettings)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Генератор отчетов (protected internal) -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-file-earmark-bar-graph text-success me-2"></i> Генератор отчётов (Задание 24)</h5>
+                    <span class="badge bg-purple text-dark" style="background-color: #d0c2eb;">protected internal</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-secondary py-2 small mb-3">
+                    <i class="bi bi-shield-check me-1"></i> Метод <code>ReportManager.GenerateReport()</code> объявлен как <code>protected internal</code>. Он доступен классам внутри сборки проекта и классам-наследникам.
+                </div>
+
+                <form method="get" asp-action="Admin" class="mb-3">
+                    <div class="input-group">
+                        <select name="reportType" class="form-select">
+                            <option value="summary" selected="@(ViewBag.SelectedReport == "summary")">Сводный отчёт по колледжу</option>
+                            <option value="students" selected="@(ViewBag.SelectedReport == "students")">Отчёт по студентам и группам</option>
+                            <option value="teachers" selected="@(ViewBag.SelectedReport == "teachers")">Отчёт по преподавателям и стажу</option>
+                            <option value="grades" selected="@(ViewBag.SelectedReport == "grades")">Отчёт по успеваемости</option>
+                            <option value="attendance" selected="@(ViewBag.SelectedReport == "attendance")">Отчёт по посещаемости занятий</option>
+                        </select>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-play-fill me-1"></i> Сформировать отчёт
+                        </button>
+                    </div>
+                </form>
+
+                <div class="border rounded bg-dark text-light p-3 font-monospace small" style="min-height: 220px; white-space: pre-wrap;">@ViewBag.ReportText</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Список пользователей системы (Задание 27) -->
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill text-dark me-2"></i> Пользователи системы и роли (Задание 26, 27)</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Логин (_username: protected)</th>
+                        <th>Отображаемое имя</th>
+                        <th>Роль (_role: protected)</th>
+                        <th>Email</th>
+                        <th>Пароль (_passwordHash: private)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in (IEnumerable<CollegeManagement.Models.User>)ViewBag.Users)
+                    {
+                        <tr>
+                            <td>@u.Id</td>
+                            <td><code>@u.Username</code></td>
+                            <td class="fw-semibold">@u.DisplayName</td>
+                            <td>
+                                @if (u.Role == "Admin")
+                                {
+                                    <span class="badge bg-danger">Admin</span>
+                                }
+                                else if (u.Role == "Teacher")
+                                {
+                                    <span class="badge bg-success">Teacher</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">Student</span>
+                                }
+                            </td>
+                            <td>@u.Email</td>
+                            <td>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-lock-fill me-1"></i> Скрыт (private _passwordHash)
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+@model IEnumerable<CollegeManagement.Models.Teacher>
+@{
+    ViewData["Title"] = "Преподаватели";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-person-workspace text-success me-2"></i> Преподавательский состав</h2>
+        <p class="text-muted mb-0">Управление преподавателями и стажем (Задания 9, 10, 18, 19)</p>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-success fw-semibold">
+            <i class="bi bi-person-plus-fill me-1"></i> Добавить преподавателя
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>ФИО (Task 23: GetFullName)</th>
+                        <th>Возраст</th>
+                        <th>Дисциплина (Subject)</th>
+                        <th>Стаж работы (Task 10: Experience)</th>
+                        <th>Инфо о преподавателе (Task 18: GetTeacherInfo)</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                Преподаватели не найдены.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var t in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-secondary font-monospace">#@t.Id</span></td>
+                            <td class="fw-semibold">
+                                <a asp-action="Details" asp-route-id="@t.Id" class="text-decoration-none text-dark">
+                                    @t.GetFullName()
+                                </a>
+                            </td>
+                            <td>@t.Age лет</td>
+                            <td><span class="badge bg-info text-dark">@t.Subject</span></td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success border border-success fw-bold">
+                                    @t.Experience лет
+                                </span>
+                            </td>
+                            <td class="small text-muted font-monospace">
+                                @t.GetTeacherInfo()
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@t.Id" class="btn btn-sm btn-outline-info me-1" title="Детали">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="UpdateExperience" asp-route-id="@t.Id" class="btn btn-sm btn-outline-warning me-1" title="Обновить стаж (UpdateExperience)">
+                                    <i class="bi bi-award"></i> Стаж
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@t.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить преподавателя @t.GetFullName()?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

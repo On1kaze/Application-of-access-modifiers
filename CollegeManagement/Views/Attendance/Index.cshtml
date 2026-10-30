@@ -1,0 +1,176 @@
+@model IEnumerable<CollegeManagement.Models.AttendanceRecord>
+@{
+    ViewData["Title"] = "Посещаемость занятий";
+    var stats = (CollegeManagement.Services.AttendanceStatistics)ViewBag.Stats;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-calendar-check text-primary me-2"></i> Учёт посещаемости занятий</h2>
+        <p class="text-muted mb-0">Класс AttendanceManager с закрытыми данными и статистикой (Задание 29, 30)</p>
+    </div>
+    <div>
+        <a asp-action="Add" class="btn btn-primary fw-semibold">
+            <i class="bi bi-plus-circle-fill me-1"></i> Отметить посещаемость
+        </a>
+    </div>
+</div>
+
+<!-- Блок статистики посещаемости (GetAttendanceStatistics) -->
+<div class="row g-3 mb-4">
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 bg-primary text-white text-center py-2">
+            <div class="card-body p-2">
+                <span class="small d-block text-white-50">Всего занятий</span>
+                <span class="fs-3 fw-bold">@stats.TotalClasses</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 bg-success text-white text-center py-2">
+            <div class="card-body p-2">
+                <span class="small d-block text-white-50">Присутствовал</span>
+                <span class="fs-3 fw-bold">@stats.PresentCount</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 bg-warning text-dark text-center py-2">
+            <div class="card-body p-2">
+                <span class="small d-block">Опоздания</span>
+                <span class="fs-3 fw-bold">@stats.LateCount</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 bg-danger text-white text-center py-2">
+            <div class="card-body p-2">
+                <span class="small d-block text-white-50">Отсутствовал</span>
+                <span class="fs-3 fw-bold">@stats.AbsentCount</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 bg-info text-dark text-center py-2">
+            <div class="card-body p-2">
+                <span class="small d-block">Уважительная</span>
+                <span class="fs-3 fw-bold">@stats.ExcusedCount</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card shadow-sm border-0 bg-dark text-white text-center py-2">
+            <div class="card-body p-2">
+                <span class="small d-block text-warning">Процент посещ.</span>
+                <span class="fs-3 fw-bold text-warning">@stats.AttendancePercentage%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Фильтры -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+        <form method="get" asp-action="Index" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <label class="form-label mb-1 small text-muted fw-semibold">Фильтр по студенту:</label>
+                <select name="studentId" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Все студенты</option>
+                    @foreach (var s in (IEnumerable<CollegeManagement.Models.Student>)ViewBag.Students)
+                    {
+                        <option value="@s.Id" selected="@(ViewBag.SelectedStudentId == s.Id)">@s.GetFullName() (@s.Group)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label mb-1 small text-muted fw-semibold">Фильтр по предмету:</label>
+                <select name="subjectId" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Все предметы</option>
+                    @foreach (var sub in (IEnumerable<CollegeManagement.Models.Subject>)ViewBag.Subjects)
+                    {
+                        <option value="@sub.Id" selected="@(ViewBag.SelectedSubjectId == sub.Id)">@sub.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end justify-content-end">
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Сбросить фильтры</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Дата</th>
+                        <th>Студент</th>
+                        <th>Предмет</th>
+                        <th>Статус посещаемости</th>
+                        <th>Примечание</th>
+                        <th class="text-end">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                Записи посещаемости отсутствуют.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td><span class="badge bg-secondary font-monospace">#@r.Id</span></td>
+                            <td>@r.Date.ToString("dd.MM.yyyy")</td>
+                            <td class="fw-semibold">@r.StudentName</td>
+                            <td>@r.SubjectName</td>
+                            <td>
+                                @if (r.Status == CollegeManagement.Models.AttendanceStatus.Present)
+                                {
+                                    <span class="badge bg-success">Присутствовал</span>
+                                }
+                                else if (r.Status == CollegeManagement.Models.AttendanceStatus.Late)
+                                {
+                                    <span class="badge bg-warning text-dark">Опоздал</span>
+                                }
+                                else if (r.Status == CollegeManagement.Models.AttendanceStatus.Excused)
+                                {
+                                    <span class="badge bg-info text-dark">Уважительная</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Отсутствовал</span>
+                                }
+                            </td>
+                            <td class="small text-muted">@r.Note</td>
+                            <td class="text-end">
+                                <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="recordId" value="@r.Id" />
+                                    <select name="status" class="form-select form-select-sm d-inline-block w-auto me-1" onchange="this.form.submit()">
+                                        <option value="Present" selected="@(r.Status == CollegeManagement.Models.AttendanceStatus.Present)">Присутствовал</option>
+                                        <option value="Late" selected="@(r.Status == CollegeManagement.Models.AttendanceStatus.Late)">Опоздал</option>
+                                        <option value="Excused" selected="@(r.Status == CollegeManagement.Models.AttendanceStatus.Excused)">Уважительная</option>
+                                        <option value="Absent" selected="@(r.Status == CollegeManagement.Models.AttendanceStatus.Absent)">Отсутствовал</option>
+                                    </select>
+                                </form>
+                                <form asp-action="Delete" asp-route-id="@r.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить эту запись?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

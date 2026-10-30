@@ -1,0 +1,117 @@
+@model CollegeManagement.Models.Group
+@{
+    ViewData["Title"] = "Группа " + Model.Name;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-collection-fill text-info me-2"></i> Группа @Model.Name</h2>
+        <p class="text-muted mb-0">Курс: @Model.Course | Инкапсулированный список студентов (Задания 11, 12, 13)</p>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Назад к списку
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Список студентов в группе (IReadOnlyList) -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-people-fill text-primary me-2"></i> Состав группы (IReadOnlyList Students: @Model.Students.Count чел.)</h5>
+                <span class="modifier-badge mod-private">private _students</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>StudentId</th>
+                                <th>ФИО студента</th>
+                                <th>Возраст</th>
+                                <th>Информация о студенте (GetStudentInfo)</th>
+                                <th class="text-end">Исключить (Task 13)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Students.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        В группе пока нет студентов. Добавьте студента через форму справа.
+                                    </td>
+                                </tr>
+                            }
+                            @foreach (var s in Model.Students)
+                            {
+                                <tr>
+                                    <td><span class="badge bg-secondary font-monospace">#@s.StudentId</span></td>
+                                    <td class="fw-semibold">
+                                        <a asp-controller="Student" asp-action="Details" asp-route-id="@s.Id" class="text-decoration-none">
+                                            @s.GetFullName()
+                                        </a>
+                                    </td>
+                                    <td>@s.Age лет</td>
+                                    <td class="small text-muted font-monospace">@s.GetStudentInfo()</td>
+                                    <td class="text-end">
+                                        <form asp-action="RemoveStudent" method="post" class="d-inline" onsubmit="return confirm('Исключить студента @s.GetFullName() из группы?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="groupId" value="@Model.Id" />
+                                            <input type="hidden" name="studentId" value="@s.StudentId" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="RemoveStudent()">
+                                                <i class="bi bi-person-dash"></i> Исключить
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Добавление студента в группу (AddStudent) -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-person-plus-fill text-success me-2"></i> Добавить в группу (Задание 12)</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info py-2 small mb-3">
+                    <i class="bi bi-shield-check me-1"></i> Метод <code>AddStudent(Student s)</code> добавляет студента только если он не равен <code>null</code> и ещё не состоит в группе.
+                </div>
+
+                <form asp-action="AddStudent" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="groupId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Выберите студента:</label>
+                        <select name="studentId" class="form-select" required>
+                            <option value="">-- Выберите студента --</option>
+                            @foreach (var s in (IEnumerable<CollegeManagement.Models.Student>)ViewBag.AvailableStudents)
+                            {
+                                <option value="@s.StudentId">@s.GetFullName() (Текущая группа: @s.Group)</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-semibold">
+                        <i class="bi bi-plus-lg me-1"></i> Добавить через AddStudent()
+                    </button>
+                </form>
+
+                <hr class="my-4" />
+
+                <div class="small text-muted">
+                    <h6 class="fw-bold small text-uppercase">Инкапсуляция (Задание 11, 13):</h6>
+                    <p class="mb-0">Список студентов <code>_students</code> является закрытым полем. Извне класса невозможно вызвать методы прямой коллекции <code>_students.Clear()</code> или <code>_students.Add()</code>. Все операции производятся строго через контролируемые методы <code>AddStudent()</code> и <code>RemoveStudent()</code>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

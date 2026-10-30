@@ -1,0 +1,75 @@
+@{
+    ViewData["Title"] = "Отметка посещаемости";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-calendar-plus text-primary me-2"></i> Отметка посещаемости (Задание 29)</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                    </div>
+                }
+
+                <form asp-action="Add" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Студент</label>
+                        <select name="studentId" class="form-select" required>
+                            <option value="">-- Выберите студента --</option>
+                            @foreach (var s in (IEnumerable<CollegeManagement.Models.Student>)ViewBag.Students)
+                            {
+                                <option value="@s.Id">@s.GetFullName() (@s.Group)</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Учебный предмет</label>
+                        <select name="subjectId" class="form-select" required>
+                            <option value="">-- Выберите предмет --</option>
+                            @foreach (var sub in (IEnumerable<CollegeManagement.Models.Subject>)ViewBag.Subjects)
+                            {
+                                <option value="@sub.Id">@sub.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Дата занятия</label>
+                            <input type="date" name="date" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Статус посещаемости</label>
+                            <select name="status" class="form-select" required>
+                                <option value="Present" selected>Присутствовал</option>
+                                <option value="Late">Опоздал</option>
+                                <option value="Excused">Уважительная причина</option>
+                                <option value="Absent">Отсутствовал</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Примечание</label>
+                        <input type="text" name="note" class="form-control" placeholder="Например: опоздал на 10 минут, справка от врача" />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-primary fw-semibold">
+                            <i class="bi bi-check-lg me-1"></i> Сохранить отметку (AddRecord)
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

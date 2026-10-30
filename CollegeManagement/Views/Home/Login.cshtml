@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Авторизация в системе";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 mt-3">
+            <div class="card-header bg-dark text-white text-center py-4 rounded-top">
+                <i class="bi bi-shield-lock-fill text-warning display-4 mb-2"></i>
+                <h4 class="mb-0 fw-bold">Вход в систему колледжа</h4>
+                <p class="text-white-50 small mb-0">Применение модификаторов доступа (Задание 26, 27)</p>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold">Логин (Имя пользователя)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Например: admin" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">Пароль</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-key"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required />
+                        </div>
+                        <div class="form-text text-muted small">
+                            <i class="bi bi-shield-shaded me-1"></i> Пароль хранится в приватном поле <code>_passwordHash</code> с солью и никогда не раскрывается.
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg fw-semibold">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Войти
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4" />
+
+                <div class="bg-light p-3 rounded-3 border">
+                    <h6 class="fw-bold mb-2 small text-uppercase text-muted">Демонстрационные аккаунты:</h6>
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="mb-1"><span class="badge bg-danger me-1">Admin</span> <strong>admin</strong> / <code>admin123</code></li>
+                        <li class="mb-1"><span class="badge bg-success me-1">Teacher</span> <strong>teacher</strong> / <code>teacher123</code></li>
+                        <li><span class="badge bg-primary me-1">Student</span> <strong>student</strong> / <code>student123</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
